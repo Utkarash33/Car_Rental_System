@@ -2,9 +2,10 @@ package com.rental.main;
 
 import java.util.Scanner;
 
-import com.rental.main.Util.DbUtils;
-
-import jakarta.persistence.EntityManager;
+import com.rental.main.entities.Customer;
+import com.rental.main.exceptions.NoRecordException;
+import com.rental.main.services.CustomerServices;
+import com.rental.main.services.CustomerServicesImpl;
 
 public class Main 
 {
@@ -15,22 +16,41 @@ public class Main
     	System.out.println();
     	System.out.println("==========================");
     	
-    	System.out.println("Choice the option: ");
-    	System.out.println("1. Login as Admin");
-    	System.out.println("2. Resister as Customer");
-    	System.out.println("2. Login as Customer");
-    	System.out.println("0.Exit the system");
+    	
     	
     	Scanner sc = new Scanner(System.in);
     	
-    	int choice = Integer.parseInt(sc.nextLine());
+    	int choice; 
          
     	
     	do
     	{
+    		
+    		System.out.println("Choice the option: ");
+        	System.out.println("1. Login as Admin");
+        	System.out.println("2. Resister as Customer");
+        	System.out.println("3. Login as Customer");
+        	System.out.println("0.Exit the system");
+        	choice = Integer.parseInt(sc.nextLine());
+     
     		switch (choice) {
 			case 1: {
-				adminMenu(sc);
+				adminLogin(sc);
+				break;
+			}
+			case 2:
+			{
+				resisterCustomer(sc);
+				break;
+			}
+			case 3:
+			{
+				loginAsCustomer(sc);
+				break;
+			}
+			case 0 :
+			{
+				System.out.println("Thank you for visit our system.");
 				break;
 			}
 			default:
@@ -39,33 +59,110 @@ public class Main
 			}
     		
     	}while(choice!=0);
+    	sc.close();
     }
 
     
-    static void displayAdminMenu()
+    private static void loginAsCustomer(Scanner sc) {
+		
+    	
+    	System.out.println("Enter the username: ");
+    	String username = sc.nextLine();
+    	System.out.println("Enter the password: ");
+    	String password = sc.nextLine();
+    	
+    	CustomerServices cusServices = new CustomerServicesImpl();
+    	
+	
+			try {
+				cusServices.customerLogin(username,password);
+				customerMenu();   
+			} catch (NoRecordException e) {
+				System.out.println(e.getMessage());
+			}
+			 	
+	}
+
+
+	private static void customerMenu() {
+    
+	
+		
+		
+		
+	}
+
+
+	private static void resisterCustomer(Scanner sc) {
+
+     System.out.println("Welcome user. Please fill all the details.");
+     System.out.println("Enter your name: ");
+     String name = sc.nextLine();
+     System.out.println("Enter you contact number: ");
+     String contact = sc.nextLine();
+     if(contact.length()!=10)
+     {
+    	 System.out.println("Invalid contact number (length==10 only)");
+    	 return;
+     }
+     System.out.println("Enter your Email: ");
+     String email = sc.nextLine();
+     if(!email.contains("@gmail.com"))
+     {
+    	 System.out.println("Invalid username must contains @gmail.com");
+    	 return;
+     }
+     System.out.println("Enter your city and state name");
+     String address = sc.nextLine();
+     System.out.println("Enter a unique password: ");
+     String password = sc.nextLine();
+     
+     Customer customer = new Customer(email, name, address, contact, password, false);
+     
+        CustomerServices cusServices = new CustomerServicesImpl();
+        
+        cusServices.addCustomer(customer);
+       
+       
+	}
+
+
+	static void displayAdminMenu()
     {
-    	System.out.println("1. Add New Car record to the system...");
+    	System.out.println("1. Add New Car record to the system");
 	    System.out.println("2. Update the details of the car");
 	    System.out.println("3. Delete car for the system");
-	    System.out.println("4. Generate report for a car");
-	    System.out.println("5. View all Car Details");
-	    System.out.println("6. View all customers");
+	    System.out.println("4. Add back the deleted car");
+	    System.out.println("5. Generate report for a car");
+	    System.out.println("6. View all Car Details");
+	    System.out.println("7. View All removed Cars");
+	    System.out.println("8. View all customers");
 	    System.out.println("0. Log out.");
     }
       
+	
+	static void adminLogin(Scanner sc) {
+		System.out.print("Enter username ");
+		String username = sc.nextLine();
+		System.out.print("Enter password ");
+		String password = sc.nextLine();
+		if(username.equals("admin") && password.equals("admin")) {
+			adminMenu(sc);
+		}else {
+			System.out.println("Invalid Username or Password");
+		}
+	}
 	private static void adminMenu(Scanner sc) {
-		
 		System.out.println("=============");
 		System.out.println("Welcome Admin");
-		System.out.println("Please Make the choice: ");
-		
-	    System.out.println();
 	    int choice=0;
 	    do
         {
 	      displayAdminMenu();
-		
-          choice  = Integer.parseInt(sc.nextLine());
+	      System.out.println("Please Make the choice: ");
+		 
+		  
+           choice  = Integer.parseInt(sc.nextLine());
          
          
         	 switch(choice)
@@ -87,16 +184,26 @@ public class Main
         	 }
         	 case 4:
         	 {
+        		 AdminUI.addBackTheRecord(sc);
+        		 break;
+        	 }
+        	 case 5:
+        	 {
         		  AdminUI.generateReportForCar(sc);
         		 break;
         	 }
-        	 case 5 :
+        	 case 6 :
         	 {
         		  AdminUI.viewAllCarDetails();
         		 break;
         		 
         	 }
-        	 case 6:
+        	 case 7:
+        	 {
+        		  AdminUI.viewAllRemovedCarList();
+        		 break;
+        	 }
+        	 case 8:
         	 {
         		  AdminUI.viewAllCustomers();
         		 break;
@@ -106,6 +213,11 @@ public class Main
         		 System.out.println("Logout returning to the main menu.");
         		 break;
         	 }
+        	 default :
+        	 {
+        		 System.out.println("Invalid choice . Please try again...");
+        	 }
+        		 
         	 
         	 }
         	 

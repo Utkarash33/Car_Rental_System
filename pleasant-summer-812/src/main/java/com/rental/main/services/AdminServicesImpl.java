@@ -8,19 +8,20 @@ import com.rental.main.entities.Car;
 import com.rental.main.entities.Customer;
 import com.rental.main.entities.Reservation;
 import com.rental.main.exceptions.NoRecordException;
+import com.rental.main.exceptions.RecordDeletedException;
 import com.rental.main.exceptions.SomeThingWentWrongException;
 
 public class AdminServicesImpl implements AdminServices{
 
 	@Override
-	public List<Customer> getCustomerList() {
+	public List<Customer> getCustomerList() throws SomeThingWentWrongException, NoRecordException {
 		  AdminDAO dao = new AdminDAOImpl();
 		  return  dao.getCustomerList();
 		 
 	}
 
 	@Override
-	public List<Car> getCarList() {
+	public List<Car> getCarList() throws SomeThingWentWrongException, NoRecordException {
 		 AdminDAO dao = new AdminDAOImpl();
 		  return  dao.getCarList();
 			 
@@ -43,7 +44,7 @@ public class AdminServicesImpl implements AdminServices{
 	}
 
 	@Override
-	public void updateCar(String Id, Car car) throws NoRecordException, SomeThingWentWrongException {
+	public void updateCar(String Id, Car car) throws NoRecordException, SomeThingWentWrongException, RecordDeletedException {
 		 AdminDAO dao = new AdminDAOImpl();
 		  dao.updateCar(Id, car);
 	}
@@ -62,7 +63,8 @@ public class AdminServicesImpl implements AdminServices{
 
 	@Override
 	public void addBack(String carId) throws SomeThingWentWrongException, NoRecordException {
-		
+		 AdminDAO dao = new AdminDAOImpl();
+		  dao.addBack(carId);
 		
 		
 	}

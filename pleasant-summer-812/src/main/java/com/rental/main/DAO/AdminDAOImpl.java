@@ -7,6 +7,7 @@ import com.rental.main.entities.Car;
 import com.rental.main.entities.Customer;
 import com.rental.main.entities.Reservation;
 import com.rental.main.exceptions.NoRecordException;
+import com.rental.main.exceptions.RecordDeletedException;
 import com.rental.main.exceptions.SomeThingWentWrongException;
 
 import jakarta.persistence.EntityManager;
@@ -16,15 +17,57 @@ import jakarta.persistence.Query;
 public class AdminDAOImpl implements AdminDAO{
 
 	@Override
-	public List<Customer> getCustomerList() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Customer> getCustomerList() throws SomeThingWentWrongException ,NoRecordException{
+		List<Customer> customerList = null;
+		
+		
+		EntityManager em = null;
+		
+		try {
+			
+			em = DbUtils.getManger();
+			
+			Query query =em.createQuery("SELECT c FROM Customers c");
+			customerList = query.getResultList();
+			
+			if(customerList==null)
+			{
+				throw new NoRecordException("There is no customer detail present in the system.");
+			}
+			
+			
+		} catch (Exception e) {
+			em.getTransaction().rollback();
+			  throw new SomeThingWentWrongException("Unable to add back the car try again...");
+		}
+		return customerList;
 	}
 
 	@Override
-	public List<Car> getCarList() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Car> getCarList() throws SomeThingWentWrongException ,NoRecordException{
+     List<Car> customerList = null;
+		
+		
+		EntityManager em = null;
+		
+		try {
+			
+			em = DbUtils.getManger();
+			
+			Query query =em.createQuery("SELECT c FROM Car c");
+			customerList = query.getResultList();
+			
+			if(customerList==null)
+			{
+				throw new NoRecordException("There is no cars detail present in the system.");
+			}
+			
+			
+		} catch (Exception e) {
+			em.getTransaction().rollback();
+			  throw new SomeThingWentWrongException("Unable to add back the car try again...");
+		}
+		return customerList;
 	}
 
 	@Override
@@ -41,7 +84,7 @@ public class AdminDAOImpl implements AdminDAO{
 			
 			Car car1 = em.find(Car.class, car.getId());
 			
-			if(car1!=null && !car.isDeleted())
+			if(car1==null)
 			{
 				throw new SomeThingWentWrongException("The Resistration number " + car.getId() + " is already occupied");
 				
@@ -89,22 +132,24 @@ public class AdminDAOImpl implements AdminDAO{
 	}
 
 	@Override
-	public void updateCar(String Id, Car car) throws NoRecordException, SomeThingWentWrongException {
+	public void updateCar(String Id, Car car) throws NoRecordException, SomeThingWentWrongException, RecordDeletedException {
 		
          EntityManager em = null;
 		
 		try {
 			em = DbUtils.getManger();
 			
-			Query query = em.createQuery("SELECT COUNT(c) FROM Car c WHERE id =:id");
-			query.setParameter("id",Id);
+			Car car1 = em.find(Car.class, Id);
 			
-			if((Long)query.getSingleResult()==0)
+			if(car1==null)
 			{
-				throw new NoRecordException("The Resistration number " + car.getId() + " is not Present");
-				
+				throw new NoRecordException("The Resistration number " + car.getId() + " is not Present");	
 			}
-		     Car car1 = em.find(Car.class,Id);
+			if(car1.isDeleted())
+			{
+				System.out.println("Added back the record and then update");
+				throw new RecordDeletedException("As the Resistration number "+ Id +" is already deleted");
+			}
 			em.getTransaction().begin();
 			em.remove(car1);
 			em.persist(car);

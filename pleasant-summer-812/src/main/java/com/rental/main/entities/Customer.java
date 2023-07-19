@@ -132,20 +132,19 @@ public class Customer {
 
 
 	public Customer(String username, String name, String address, String contactDetails, String password,
-			boolean deleted, List<Reservation> reservations) {
+			boolean deleted) {
 		super();
 		this.username = username;
 		this.name = name;
 		this.address = address;
 		this.contactDetails = contactDetails;
 		this.password = password;
-		this.deleted = deleted;
-		this.reservations = reservations;
+		this.deleted = deleted;	
 	}
 
 
 	public Customer(Long id, String username, String name, String address, String contactDetails, String password,
-			boolean deleted, List<Reservation> reservations) {
+			boolean deleted) {
 		super();
 		this.id = id;
 		this.username = username;
@@ -154,7 +153,6 @@ public class Customer {
 		this.contactDetails = contactDetails;
 		this.password = password;
 		this.deleted = deleted;
-		this.reservations = reservations;
 	}
 
 
