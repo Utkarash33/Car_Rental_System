@@ -33,6 +33,8 @@ public class Car {
 	private Double mileage;
 	@Column(name= "rent_per_hour")
 	private double rent;
+	@Column(name = "city")
+	private String city;
 	
 	@Column(name="availability")
 	private boolean availability;
@@ -45,6 +47,17 @@ public class Car {
 	public String getId() {
 		return id;
 	}
+	
+
+	public String getCity() {
+		return city;
+	}
+
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
 
 	public void setId(String id) {
 		this.id = id;
@@ -120,7 +133,7 @@ public class Car {
 		super();
 	}
 
-	public Car(String id, String brand, String model, Integer year, Double mileage,Double rent, boolean availability,boolean delete) {
+	public Car(String id, String brand, String model, Integer year, Double mileage,Double rent, String city, boolean availability,boolean delete) {
 		super();
 		this.id = id;
 		this.brand = brand;
@@ -128,25 +141,29 @@ public class Car {
 		this.year = year;
 		this.mileage = mileage;
 		this.rent = rent;
+		this.city = city;
 		this.availability = availability;
 		this.deleted = delete;
 	}
 
-	public Car(String brand, String model, Integer year, Double mileage, boolean availability,boolean delete) {
+	public Car(String brand, String model, Integer year, Double mileage,Double rent, String city, boolean availability,boolean delete) {
 		super();
 		this.brand = brand;
 		this.model = model;
 		this.year = year;
 		this.mileage = mileage;
 		this.rent = rent;
+		this.city = city;
 		this.availability = availability;
 		this.deleted = delete;
 	}
 
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(availability, brand, deleted, id, mileage, model, rent, reservations, year);
+		return Objects.hash(availability, brand, city, deleted, id, mileage, model, rent, reservations, year);
 	}
+
 
 	@Override
 	public boolean equals(Object obj) {
@@ -158,11 +175,21 @@ public class Car {
 			return false;
 		Car other = (Car) obj;
 		return availability == other.availability && Objects.equals(brand, other.brand)
-				&& Objects.equals(id, other.id) && Objects.equals(mileage, other.mileage)
-				&& Objects.equals(model, other.model)
+				&& Objects.equals(city, other.city) && deleted == other.deleted && Objects.equals(id, other.id)
+				&& Objects.equals(mileage, other.mileage) && Objects.equals(model, other.model)
 				&& Double.doubleToLongBits(rent) == Double.doubleToLongBits(other.rent)
 				&& Objects.equals(reservations, other.reservations) && Objects.equals(year, other.year);
 	}
+
+
+	@Override
+	public String toString() {
+		return "Car [id=" + id + ", brand=" + brand + ", model=" + model + ", year=" + year + ", mileage=" + mileage
+				+ ", rent=" + rent + ", city=" + city + ", availability=" + availability + ", deleted=" + deleted
+				+ ", reservations=" + reservations + "]";
+	}
+
+	
 	
 	
 	

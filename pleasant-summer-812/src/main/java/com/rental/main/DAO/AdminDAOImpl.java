@@ -26,19 +26,19 @@ public class AdminDAOImpl implements AdminDAO{
 		try {
 			
 			em = DbUtils.getManger();
-			
-			Query query =em.createQuery("SELECT c FROM Customers c");
+			Query query =em.createQuery("SELECT c FROM Customer c");
 			customerList = query.getResultList();
-			
-			if(customerList==null)
+			if(customerList.isEmpty())
 			{
 				throw new NoRecordException("There is no customer detail present in the system.");
 			}
-			
-			
 		} catch (Exception e) {
-			em.getTransaction().rollback();
-			  throw new SomeThingWentWrongException("Unable to add back the car try again...");
+			
+			throw new SomeThingWentWrongException("Unable to find any customer detail...");
+		}
+		finally
+		{
+			em.close();
 		}
 		return customerList;
 	}
@@ -57,7 +57,7 @@ public class AdminDAOImpl implements AdminDAO{
 			Query query =em.createQuery("SELECT c FROM Car c");
 			customerList = query.getResultList();
 			
-			if(customerList==null)
+			if(customerList.isEmpty())
 			{
 				throw new NoRecordException("There is no cars detail present in the system.");
 			}
@@ -84,7 +84,7 @@ public class AdminDAOImpl implements AdminDAO{
 			
 			Car car1 = em.find(Car.class, car.getId());
 			
-			if(car1==null)
+			if(car1!=null)
 			{
 				throw new SomeThingWentWrongException("The Resistration number " + car.getId() + " is already occupied");
 				

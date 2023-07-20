@@ -17,9 +17,6 @@ public class Customer {
 
 	
 	@Id
-	@Column(name = "customer_id")
-	@GeneratedValue (strategy = GenerationType.IDENTITY)
-	private Long id;
 	@Column(name = "username", unique = true)
     private String username;
 	
@@ -41,20 +38,6 @@ public class Customer {
 	
 	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
 	private List<Reservation> reservations;
-	
-	
-	
-	
-	public Long getId() {
-		return id;
-	}
-
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-
 	public String getPassword() {
 		return password;
 	}
@@ -143,18 +126,12 @@ public class Customer {
 	}
 
 
-	public Customer(Long id, String username, String name, String address, String contactDetails, String password,
-			boolean deleted) {
-		super();
-		this.id = id;
-		this.username = username;
-		this.name = name;
-		this.address = address;
-		this.contactDetails = contactDetails;
-		this.password = password;
-		this.deleted = deleted;
+	@Override
+	public String toString() {
+		return "Customer [username=" + username + ", name=" + name + ", address=" + address + ", contactDetails="
+				+ contactDetails + ", password=" + password + ", deleted=" + deleted + ", reservations=" + reservations
+				+ "]";
 	}
-
 
 
 	
