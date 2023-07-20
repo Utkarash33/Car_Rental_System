@@ -76,16 +76,96 @@ public class Main
 	
 			try {
 				cusServices.customerLogin(username,password);
-				customerMenu();   
+				customerMenu(sc,username);   
 			} catch (NoRecordException e) {
 				System.out.println(e.getMessage());
 			}
 			 	
 	}
-
-
-	private static void customerMenu() {
     
+    private static void displayCustomerMenu()
+    {
+    	System.out.println("1. Search car for rent.");
+    	System.out.println("2. view all the cars");
+    	System.out.println("3. Make the reservation.");
+    	System.out.println("4. Modify reservation");
+    	System.out.println("5. Cancelling reservation");
+    	System.out.println("6. View all the reservations");
+    	System.out.println("0. Logout");
+    }
+
+
+	private static void customerMenu(Scanner sc,String username) {
+		
+		
+		System.out.println("Please make your choice: ");
+	    int choice=0;
+	    do
+        {
+	      displayCustomerMenu();
+	      System.out.println("Please Make the choice: ");
+		 
+		  
+           choice  = Integer.parseInt(sc.nextLine());
+         
+         
+        	 switch(choice)
+        	 {
+        	 case 1:
+        	 {
+      		    CustomerUI.searchCar(sc);
+        		 break;
+        	 }
+        	 case 2 :
+        	 {
+        		 CustomerUI.viewAllCars();
+        		 break;
+        	 }
+        	 case 3:
+        	 {
+        		 CustomerUI.makeReservation(sc,username);
+        		 break;
+        	 }
+        	 case 4:
+        	 {
+        		 AdminUI.addBackTheRecord(sc);
+        		 break;
+        	 }
+        	 case 5:
+        	 {
+        		  AdminUI.generateReportForCar(sc);
+        		 break;
+        	 }
+        	 case 6 :
+        	 {
+        		  CustomerUI.getAllTheReservations(username);
+        		 break;
+        		 
+        	 }
+        	 case 7:
+        	 {
+        		  AdminUI.viewAllRemovedCarList();
+        		 break;
+        	 }
+        	 case 8:
+        	 {
+        		  AdminUI.viewAllCustomers();
+        		 break;
+        	 }
+        	 case 0:
+        	 {
+        		 System.out.println("Logout returning to the main menu.");
+        		 break;
+        	 }
+        	 default :
+        	 {
+        		 System.out.println("Invalid choice . Please try again...");
+        	 }
+        		 
+        	 
+        	 }
+        	 
+         }while(choice!=0);
 	
 		
 		
@@ -152,6 +232,7 @@ public class Main
 			System.out.println("Invalid Username or Password");
 		}
 	}
+	
 	private static void adminMenu(Scanner sc) {
 		System.out.println("=============");
 		System.out.println("Welcome Admin");

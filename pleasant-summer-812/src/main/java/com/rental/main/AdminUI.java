@@ -13,6 +13,9 @@ import com.rental.main.services.AdminServices;
 import com.rental.main.services.AdminServicesImpl;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 public class AdminUI {
 
@@ -32,8 +35,10 @@ public class AdminUI {
 	    Double mileage = Double.parseDouble(sc.nextLine());
 	    System.out.println("Enter the Rent per Hour:");
 	    Double rent = Double.parseDouble(sc.nextLine());
+	    System.out.println("Resistered city name");
+	    String city = sc.nextLine();
 	    
-	    Car car = new Car(number, brand, model, year, mileage,rent, true, false);
+	    Car car = new Car(number, brand, model, year, mileage,rent,city, true, false);
 	    
 	    AdminServices adminServices = new AdminServicesImpl();
 	    
@@ -60,6 +65,8 @@ public class AdminUI {
 	   
 	    Double mileage = Double.parseDouble(sc.nextLine());
 	    System.out.println("Enter the Rent per Hour:");
+	    System.out.println("Enter the Resisteration city ");
+	    String city= sc.nextLine();
 	    Double rent = Double.parseDouble(sc.nextLine());
         System.out.println("Is Avaliable [y/n] ");
 	    
@@ -70,7 +77,7 @@ public class AdminUI {
 	    	avFlag = true;
 	    	
 	    }
-	    Car car = new Car(number, brand, model, year, mileage,rent, avFlag, false);
+	    Car car = new Car(number, brand, model, year, mileage,rent,city, avFlag, false);
 	   
 	    AdminServices adminServices = new AdminServicesImpl();
 	    
@@ -139,6 +146,7 @@ public class AdminUI {
 				System.out.println("Model:-> "+c.getModel());
 				System.out.println("Mileage:-> "+c.getMileage());
 				System.out.println("Rent per hour:-> "+ c.getRent());
+				System.out.println("Resistration city:-> "+c.getCity());
 				System.out.print("Availability status:-> ");
 				System.out.println(c.isAvailability()?"Available":"Not Available");
 				System.out.println("===============================================");
@@ -166,6 +174,7 @@ public class AdminUI {
 				System.out.println("Model:-> "+c.getModel());
 				System.out.println("Mileage:-> "+c.getMileage());
 				System.out.println("Rent per hour:-> "+ c.getRent());
+				System.out.println("Resistration city:-> "+c.getCity());
 				System.out.print("Availability status:-> ");
 				System.out.println(c.isAvailability()?"Available":"Not Available");
 				System.out.println("===============================================");
@@ -180,10 +189,21 @@ public class AdminUI {
 			
 			
 			List<Customer> list =adminServices.getCustomerList();
-			
-			
-			
-			
+
+			list = list.stream().filter(c->c.isDeleted()==false).toList();
+			if(list==null)
+			{
+				System.out.println("There is no car detail available.");
+				return;
+			}
+			list.forEach(c->
+			{
+				System.out.println("Name:-> "+c.getName());
+				System.out.println("Email:-> "+c.getUsername());
+				System.out.println("Address:-> "+c.getAddress());
+				System.out.println("Contact number:-> "+ c.getContactDetails());
+				System.out.println("===============================================");
+			});			
 		} catch (SomeThingWentWrongException | NoRecordException e) {
 			System.out.println(e.getMessage());
 		}
