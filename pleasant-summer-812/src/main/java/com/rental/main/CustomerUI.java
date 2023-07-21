@@ -245,17 +245,17 @@ public class CustomerUI {
 				    try {
 				        List<Reservation> reservations = services.viewAllReservations(username);
 
-				        // Iterate through the reservations
+				     
 				        for (Reservation reservation : reservations) {
-				            // Fetch transactions eagerly
+				           
 				            reservation.getTransactions().size();
 
-				            // Print reservation details
+				         
 				            System.out.println("Reservation ID: " + reservation.getId());
 				            System.out.println("Rental Period Start: " + reservation.getRentalPeriodStart());
 				            System.out.println("Rental Period End: " + reservation.getRentalPeriodEnd());
 
-				            // Print customer details
+				           
 				            Customer customer = reservation.getCustomer();
 				            System.out.println("Customer Details:");
 				            System.out.println("  Username: " + customer.getUsername());
@@ -263,7 +263,7 @@ public class CustomerUI {
 				            System.out.println("  Address: " + customer.getAddress());
 				            System.out.println("  Contact Details: " + customer.getContactDetails());
 
-				            // Print car details
+				          
 				            Car car = reservation.getCar();
 				            System.out.println("Car Details:");
 				            System.out.println("  Car ID: " + car.getId());
@@ -279,6 +279,25 @@ public class CustomerUI {
 				    } catch (SomeThingWentWrongException e) {
 				        System.out.println(e.getMessage());
 				    }
+				}
+				public static void cancelReservation(Scanner sc, String username) {
+					
+					
+					System.out.println("Enter the reservation id to remove cancel the reservation");
+					Long id = Long.parseLong(sc.nextLine());
+					
+					System.out.println("Enter the password: ");
+					String pass = sc.nextLine();
+					
+					
+					CustomerServices services = new CustomerServicesImpl();
+					try {
+						services.cancelReservation(username,id,pass);
+					} catch (SomeThingWentWrongException e) {
+						System.out.println(e.getMessage());
+					}
+					
+					
 				}
 
 

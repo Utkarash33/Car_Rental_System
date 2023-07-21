@@ -69,4 +69,10 @@ public class AdminServicesImpl implements AdminServices{
 		
 	}
 
+	@Override
+	public void deleteCustomer(String username) throws SomeThingWentWrongException, NoRecordException {
+		 AdminDAO dao = new AdminDAOImpl();
+		  dao.deleteCustomer(username);
+	}
+
 }

@@ -40,7 +40,7 @@ public  class CustomerDAOImpl implements CustomerDAO{
 
 			if( count!=null && count>0)
 			{
-				throw new DuplicateRecordException("The user is already present");
+				throw new DuplicateRecordException("Cannot use the particluar username.");
 			}
 			em.persist(customer);
 			em.getTransaction().commit();
@@ -74,10 +74,15 @@ public  class CustomerDAOImpl implements CustomerDAO{
                query.setParameter("username", username);
                
               Customer count =(Customer) query.getSingleResult();
+              if(count.isDeleted())
+              {
+            	  throw new NoRecordException("Cannot use the particluar username.");
+              }
 			if(!count.getPassword().equals(password))
 			{
 				throw new NoRecordException("Invalid Password please try again.");
 			}
+			
 			
 			System.out.println("Welcome "+count.getName()+" to the system.");
 			
@@ -150,7 +155,7 @@ public  class CustomerDAOImpl implements CustomerDAO{
 	    try {
 	        em.getTransaction().begin();
 
-	        // Get all reservations where the end date is before the current date and time
+	        
 	        LocalDateTime currentDateTime = LocalDateTime.now();
 	        Query query = em.createQuery("SELECT r FROM Reservation r WHERE r.rentalPeriodEnd <= :currentDateTime");
 	        query.setParameter("currentDateTime", currentDateTime);
@@ -197,6 +202,63 @@ public  class CustomerDAOImpl implements CustomerDAO{
 	    }
 	}
 
+	    @Override
+	    public void cancelReservation(String username, Long id, String pass) throws SomeThingWentWrongException {
+	        EntityManager entityManager = DbUtils.getManger();
 
+	        try {
+	            entityManager.getTransaction().begin();
+
+	            
+	            Reservation reservation = entityManager.find(Reservation.class, id);
+
+	            if (reservation != null && reservation.getRentalPeriodStart().isAfter(LocalDateTime.now())) {
+	                Customer customer = reservation.getCustomer();
+
+	               
+	                if (customer != null && customer.getUsername().equals(username) && customer.getPassword().equals(pass)) {
+	                    Transaction transaction = getTransactionByReservationId(id);
+	                    Double amount = transaction.getAmount();
+	                    entityManager.remove(reservation);
+	                    if (transaction != null) {
+	                        entityManager.remove(transaction);
+	                    }
+
+	                    entityManager.getTransaction().commit();
+	                    System.out.println("Reservation with ID " + id + " has been canceled.");
+	                    System.out.println("Amount Rs."+amount+" will we refunded to you account in 24 hours.");
+	                } else {
+	                    throw new SomeThingWentWrongException("Invalid username or password.");
+	                }
+	            } else {
+	                throw new SomeThingWentWrongException("Unable to cancel the reservation. Please check the reservation ID or reservation time.");
+	            }
+	        } catch (SomeThingWentWrongException e) {
+	            entityManager.getTransaction().rollback();
+	            System.out.println(e.getMessage());
+	        } finally {
+	            entityManager.close();
+	        }
+	    }
+
+	    public Transaction getTransactionByReservationId(Long reservationId) {
+	        EntityManager entityManager = DbUtils.getManger();
+
+	        try {
+	            entityManager.getTransaction().begin();
+	            Query query = entityManager.createQuery("SELECT t FROM Transaction t WHERE t.reservation.id = :reservationId", Transaction.class);
+	            query.setParameter("reservationId", reservationId);
+	            Transaction transaction = (Transaction) query.getSingleResult();
+	            entityManager.getTransaction().commit();
+	            return transaction;
+	        } catch (Exception e) {
+	            entityManager.getTransaction().rollback();
+	            return null; 
+	        } finally {
+	            entityManager.close();
+	        }
+	    }
+
+	
 
 }

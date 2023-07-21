@@ -29,6 +29,8 @@ List<Customer> getCustomerList() throws SomeThingWentWrongException, NoRecordExc
 	
 	String generateReport(String carId);
 
+	void deleteCustomer(String username) throws SomeThingWentWrongException, NoRecordException;
+
 	
 		
 }
