@@ -97,5 +97,12 @@ public class CustomerServicesImpl implements CustomerServices {
 		
 	}
 
+	@Override
+	public void cancelReservation(String username, Long id, String pass) throws SomeThingWentWrongException {
+		
+		CustomerDAO dao = new CustomerDAOImpl();
+		dao.cancelReservation(username,id,pass);
+	}
+
 
 }

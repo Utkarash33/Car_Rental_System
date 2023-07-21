@@ -6,6 +6,7 @@ import com.rental.main.Util.DbUtils;
 import com.rental.main.entities.Car;
 import com.rental.main.entities.Customer;
 import com.rental.main.entities.Reservation;
+import com.rental.main.entities.Transaction;
 import com.rental.main.exceptions.NoRecordException;
 import com.rental.main.exceptions.RecordDeletedException;
 import com.rental.main.exceptions.SomeThingWentWrongException;
@@ -14,7 +15,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
 import jakarta.persistence.Query;
 
-public class AdminDAOImpl implements AdminDAO{
+public  class AdminDAOImpl implements AdminDAO{
 
 	@Override
 	public List<Customer> getCustomerList() throws SomeThingWentWrongException ,NoRecordException{
@@ -200,8 +201,79 @@ public class AdminDAOImpl implements AdminDAO{
 
 	@Override
 	public String generateReport(String carId) {
-		// TODO Auto-generated method stub
-		return null;
+	    EntityManager em = null;
+
+	    try {
+	        em = DbUtils.getManger();
+
+	        Car car = em.find(Car.class, carId);
+	        if (car == null) {
+	            throw new NoRecordException("No car found with registration Id:-> " + carId);
+	        }
+
+	        Query query = em.createQuery("SELECT r FROM Reservation r WHERE r.car.id = :carId");
+	        query.setParameter("carId", carId);
+
+	        List<Reservation> list = query.getResultList();
+
+	        if (list.isEmpty()) {
+	            throw new NoRecordException("There is no reservation record available.");
+	        }
+
+	        CustomerDAO dao = new CustomerDAOImpl();
+
+	        Double sum = 0.0;
+
+	        for (Reservation reservation : list) {
+	            Transaction transaction = dao.getTransactionByReservationId(reservation.getId());
+	            if (transaction != null) {
+	                sum += transaction.getAmount();
+	            }
+	        }
+	        System.out.println("================================");
+	        System.out.println("Brand-> " + car.getBrand());
+	        System.out.println("Model-> " + car.getModel());
+	        System.out.println("Rent per Hour -> Rs." + car.getRent());
+	        System.out.println("Mileage-> " + car.getMileage());
+	        System.out.println("Total Reservation-> " + list.size());
+	        System.out.println("Total Revenue-> " + sum);
+	        System.out.println("================================");
+
+	    } catch (Exception e) {
+	        System.out.println(e.getMessage());
+	    }
+	    return null;
+	}
+
+
+	@Override
+	public void deleteCustomer(String username) throws SomeThingWentWrongException, NoRecordException {
+EntityManager em = null;
+		
+		try {
+			em= DbUtils.getManger();
+			
+			Car car = em.find(Car.class, username);
+			if(car==null)
+			{
+				throw new NoRecordException("The username ->  " + car.getId() + " is not Present");
+			}
+			
+			em.getTransaction().begin();
+		    car.setDeleted(true);
+			em.getTransaction().commit();
+			System.out.println("The Customer details has been remove successfully...");
+			
+		} catch (Exception e) {
+			em.getTransaction().rollback();
+			throw new SomeThingWentWrongException("Unable to Remove customer");
+		}
+		finally
+		{
+			em.close();
+		}
+		
+		
 	}
      
 	

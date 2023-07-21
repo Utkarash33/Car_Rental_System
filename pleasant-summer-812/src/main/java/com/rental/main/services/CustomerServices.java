@@ -30,4 +30,6 @@ public interface CustomerServices {
 
 	List<Reservation> viewAllReservations(String username) throws SomeThingWentWrongException;
 
+	void cancelReservation(String username, Long id, String pass) throws SomeThingWentWrongException;
+
 }

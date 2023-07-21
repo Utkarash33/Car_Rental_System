@@ -26,6 +26,8 @@ public interface AdminDAO {
 	void  deleteCar(String carId) throws SomeThingWentWrongException, NoRecordException;
 	
 	String generateReport(String carId);
+
+	void deleteCustomer(String username) throws SomeThingWentWrongException, NoRecordException;
 		
 	
 	

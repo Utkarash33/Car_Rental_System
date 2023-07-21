@@ -209,5 +209,17 @@ public class AdminUI {
 		}
 	}
 
+	public static void RemoveCustomer(Scanner sc) {
+		System.out.println("Enter the username of the customer");
+		String username = sc.nextLine();
+        AdminServices adminServices = new AdminServicesImpl();
+	    
+	    try {
+			adminServices.deleteCustomer(username);
+		} catch (SomeThingWentWrongException | NoRecordException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
 
 }

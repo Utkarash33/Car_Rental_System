@@ -128,12 +128,12 @@ public class Main
         	 }
         	 case 4:
         	 {
-        		 AdminUI.addBackTheRecord(sc);
+//        		 CustomerUI.modifyReservation(sc,username);
         		 break;
         	 }
         	 case 5:
         	 {
-        		  AdminUI.generateReportForCar(sc);
+        		 CustomerUI.cancelReservation(sc,username);
         		 break;
         	 }
         	 case 6 :
@@ -217,6 +217,7 @@ public class Main
 	    System.out.println("6. View all Car Details");
 	    System.out.println("7. View All removed Cars");
 	    System.out.println("8. View all customers");
+	    System.out.println("9. Remove customer for the system.");
 	    System.out.println("0. Log out.");
     }
       
@@ -287,6 +288,11 @@ public class Main
         	 case 8:
         	 {
         		  AdminUI.viewAllCustomers();
+        		 break;
+        	 }
+        	 case 9:
+        	 {
+        		  AdminUI.RemoveCustomer(sc);
         		 break;
         	 }
         	 case 0:
