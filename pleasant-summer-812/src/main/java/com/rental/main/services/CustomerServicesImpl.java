@@ -104,5 +104,11 @@ public class CustomerServicesImpl implements CustomerServices {
 		dao.cancelReservation(username,id,pass);
 	}
 
+	@Override
+	public void modifyReservation(String username, Long resId, LocalDateTime rentalPeriodStart,
+			LocalDateTime rentalPeriodEnd, long hours) {
+		CustomerDAO dao = new CustomerDAOImpl();
+		dao.modifyReservation(username,resId,rentalPeriodStart,rentalPeriodEnd,hours);
+	}
 
 }

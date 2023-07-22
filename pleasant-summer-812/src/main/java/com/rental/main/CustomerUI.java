@@ -299,6 +299,46 @@ public class CustomerUI {
 					
 					
 				}
+				public static void modifyReservation(Scanner sc, String username) {
+					
+					System.out.println("Enter the reservation id to modify");
+					 Long resId = Long.parseLong(sc.nextLine());
+					
+					 System.out.println("Enter the date and time for renting (yyyy-MM-dd HH:mm): ");
+					    String startDateTimeStr = sc.nextLine();
+					    LocalDateTime rentalPeriodStart = LocalDateTime.parse(startDateTimeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+					
+					    if (rentalPeriodStart.isBefore(LocalDateTime.now().plusHours(12))) {
+					        System.out.println("Renting time should start at least 12 hours from now.");
+					        return;
+					    }
+					
+					    System.out.println("Enter the date and time for returning (yyyy-MM-dd HH:mm): ");
+					    String endDateTimeStr = sc.nextLine();
+					    LocalDateTime rentalPeriodEnd = LocalDateTime.parse(endDateTimeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+					
+					    if (rentalPeriodEnd.isBefore(rentalPeriodStart.plusHours(3))) {
+					        System.out.println("Minimum rental duration is 3 hours.");
+					        return;
+					    }
+					
+					
+					    Duration duration = Duration.between(rentalPeriodStart, rentalPeriodEnd);
+					
+					    
+						    long hours = duration.toHours();
+						
+						    CustomerServices services = new CustomerServicesImpl();
+						
+						    try {
+						        services.modifyReservation(username, resId, rentalPeriodStart, rentalPeriodEnd, hours);
+						    } catch (SomeThingWentWrongException e) {
+						        System.out.println(e.getMessage());
+						    }
+					
+					
+					
+				}
 
 
 }

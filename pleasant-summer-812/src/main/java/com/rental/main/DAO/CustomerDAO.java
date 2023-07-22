@@ -24,7 +24,9 @@ public interface CustomerDAO {
 
 	void cancelReservation(String username, Long id, String pass) throws SomeThingWentWrongException;
 
-	Transaction getTransactionByReservationId(Long i); 
+	Transaction getTransactionByReservationId(Long i);
+
+	void modifyReservation(String username, Long resId, LocalDateTime rentalPeriodStart, LocalDateTime rentalPeriodEnd, long hours); 
 
 
 }
