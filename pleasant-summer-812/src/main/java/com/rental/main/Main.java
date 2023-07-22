@@ -128,7 +128,7 @@ public class Main
         	 }
         	 case 4:
         	 {
-//        		 CustomerUI.modifyReservation(sc,username);
+        		 CustomerUI.modifyReservation(sc,username);
         		 break;
         	 }
         	 case 5:

@@ -259,6 +259,91 @@ public  class CustomerDAOImpl implements CustomerDAO{
 	        }
 	    }
 
+		
+			@Override
+			public void modifyReservation(String username, Long resId, LocalDateTime rentalPeriodStart,
+			        LocalDateTime rentalPeriodEnd, long hours) {
+			    EntityManager entityManager = DbUtils.getManger();
+
+			    try {
+			        entityManager.getTransaction().begin();
+
+			        Reservation reservation = entityManager.find(Reservation.class, resId);
+
+			        if (reservation != null && reservation.getRentalPeriodStart().isAfter(LocalDateTime.now())) {
+			            Customer customer = reservation.getCustomer();
+
+			            if (customer != null && customer.getUsername().equals(username)) {
+			                Scanner sc = new Scanner(System.in);
+
+			                Car car = reservation.getCar();
+			                Transaction transaction = getTransactionByReservationId(resId);
+			                Double oldAmount = transaction.getAmount();
+
+			                
+			                Double newAmount = hours * car.getMileage();
+			                if (newAmount > oldAmount) {
+			                   
+			                    Double extraAmount = newAmount - oldAmount;
+			                    System.out.println("You need to pay an additional amount of: Rs. " + extraAmount);
+
+			                    System.out.println("Confirm extra amount payment [yes/no]: ");
+			                    String extraPaymentConfirmation = sc.nextLine().toLowerCase();
+
+			                    if (extraPaymentConfirmation.equals("yes")) {
+			                      
+			                        System.out.println("Enter payment details and proceed with the payment.");
+			                    } else {
+			                        System.out.println("Extra amount payment canceled. Reservation modification canceled.");
+			                        entityManager.getTransaction().rollback();
+			                        return;
+			                    }
+			                } else {
+			                   
+			                    Double refundAmount = oldAmount - newAmount;
+			                    System.out.println("You will be refunded an amount of: Rs. " + refundAmount);
+			                  
+			                }
+
+			                System.out.println("Confirm reservation modification [yes/no]: ");
+			                String confirmation = sc.nextLine().toLowerCase();
+
+			                if (confirmation.equals("yes")) {
+			                    System.out.println("Enter your password for confirmation: ");
+			                    String enteredPassword = sc.nextLine();
+
+			                    if (customer.getPassword().equals(enteredPassword)) {
+			                       
+			                        transaction.setAmount(newAmount);
+			                        reservation.setRentalPeriodStart(rentalPeriodStart);
+			                        reservation.setRentalPeriodEnd(rentalPeriodEnd);
+
+			                        entityManager.getTransaction().commit();
+			                        System.out.println("Reservation with ID " + resId + " has been modified.");
+			                    } else {
+			                        System.out.println("Invalid password. Reservation modification canceled.");
+			                        entityManager.getTransaction().rollback();
+			                    }
+			                } else {
+			                    System.out.println("Reservation modification canceled.");
+			                    entityManager.getTransaction().rollback();
+			                }
+			            } else {
+			                throw new SomeThingWentWrongException("Invalid username.");
+			            }
+			        } else {
+			            throw new SomeThingWentWrongException("Unable to modify the reservation. Please check the reservation ID or reservation time.");
+			        }
+			    } catch (SomeThingWentWrongException e) {
+			        System.out.println(e.getMessage());
+			    } finally {
+			        entityManager.close();
+			    }
+		}
+
+		
+		
+
 	
 
 }

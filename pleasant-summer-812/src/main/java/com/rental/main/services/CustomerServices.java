@@ -32,4 +32,7 @@ public interface CustomerServices {
 
 	void cancelReservation(String username, Long id, String pass) throws SomeThingWentWrongException;
 
+	void modifyReservation(String username, Long resId, LocalDateTime rentalPeriodStart, LocalDateTime rentalPeriodEnd,
+			long hours);
+
 }
