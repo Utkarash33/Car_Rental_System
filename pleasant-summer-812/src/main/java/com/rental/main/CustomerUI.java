@@ -332,7 +332,7 @@ public class CustomerUI {
 						
 						    try {
 						        services.modifyReservation(username, resId, rentalPeriodStart, rentalPeriodEnd, hours);
-						    } catch (SomeThingWentWrongException e) {
+						    } catch (Exception e) {
 						        System.out.println(e.getMessage());
 						    }
 					
