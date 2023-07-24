@@ -46,6 +46,8 @@ public  class AdminDAOImpl implements AdminDAO{
 
 	@Override
 	public List<Car> getCarList() throws SomeThingWentWrongException ,NoRecordException{
+	CustomerDAO	cus =new CustomerDAOImpl();
+	cus.updateCarAvailability();
      List<Car> customerList = null;
 		
 		

@@ -65,9 +65,9 @@ public class AdminUI {
 	   
 	    Double mileage = Double.parseDouble(sc.nextLine());
 	    System.out.println("Enter the Rent per Hour:");
+	    Double rent = Double.parseDouble(sc.nextLine());
 	    System.out.println("Enter the Resisteration city ");
 	    String city= sc.nextLine();
-	    Double rent = Double.parseDouble(sc.nextLine());
         System.out.println("Is Avaliable [y/n] ");
 	    
 	    String av = sc.nextLine().toLowerCase();

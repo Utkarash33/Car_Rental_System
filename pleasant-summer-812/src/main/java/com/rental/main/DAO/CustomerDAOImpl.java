@@ -120,7 +120,7 @@ public  class CustomerDAOImpl implements CustomerDAO{
 	           
 	           
 	            Scanner sc = new Scanner(System.in);
-	            System.out.println("Total amount to pay:-> "+amountToPay);
+	            System.out.println("Total amount to pay:-> Rs."+amountToPay);
 	            System.out.println("confirm Payment[yes/no]");
 	            String con = sc.nextLine().toLowerCase();
 	            Transaction t = new Transaction(reservation, amountToPay);
@@ -219,10 +219,10 @@ public  class CustomerDAOImpl implements CustomerDAO{
 	                if (customer != null && customer.getUsername().equals(username) && customer.getPassword().equals(pass)) {
 	                    Transaction transaction = getTransactionByReservationId(id);
 	                    Double amount = transaction.getAmount();
+	                    entityManager.remove(transaction);
 	                    entityManager.remove(reservation);
-	                    if (transaction != null) {
-	                        entityManager.remove(transaction);
-	                    }
+	                   
+	                    
 
 	                    entityManager.getTransaction().commit();
 	                    System.out.println("Reservation with ID " + id + " has been canceled.");

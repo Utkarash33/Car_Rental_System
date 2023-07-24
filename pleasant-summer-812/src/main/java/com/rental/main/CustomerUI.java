@@ -8,10 +8,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
+import com.rental.main.DAO.CustomerDAO;
+import com.rental.main.DAO.CustomerDAOImpl;
 import com.rental.main.Util.DbUtils;
 import com.rental.main.entities.Car;
 import com.rental.main.entities.Customer;
 import com.rental.main.entities.Reservation;
+import com.rental.main.entities.Transaction;
 import com.rental.main.exceptions.NoRecordException;
 import com.rental.main.exceptions.SomeThingWentWrongException;
 import com.rental.main.services.CustomerServices;
@@ -35,6 +38,7 @@ public class CustomerUI {
     	   System.out.println("1. Search Car by rent range");
     	   System.out.println("2. Search car by mileage range");
     	   System.out.println("3. Search by Location. (City name)");
+    	   System.out.println("0. back");
     	   
     	    choice = Integer.parseInt(sc.nextLine());
     	   
@@ -53,6 +57,11 @@ public class CustomerUI {
 			searchByLocation(sc);
 			break;
 		}
+		case 0:
+		{
+			return;
+		}
+
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + choice);
 		}
@@ -205,7 +214,7 @@ public class CustomerUI {
 		    System.out.println("Enter the Registration number of the car: ");
 		    String resId = sc.nextLine();
 		    
-		    System.out.println("Enter the date and time for renting (yyyy-MM-dd HH:mm): ");
+		    System.out.println("Enter the starting date and time for renting (yyyy-MM-dd HH:mm): ");
 		    String startDateTimeStr = sc.nextLine();
 		    LocalDateTime rentalPeriodStart = LocalDateTime.parse(startDateTimeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 		
@@ -214,7 +223,7 @@ public class CustomerUI {
 		        return;
 		    }
 		
-		    System.out.println("Enter the date and time for returning (yyyy-MM-dd HH:mm): ");
+		    System.out.println("Enter the ending date and time for returning (yyyy-MM-dd HH:mm): ");
 		    String endDateTimeStr = sc.nextLine();
 		    LocalDateTime rentalPeriodEnd = LocalDateTime.parse(endDateTimeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 		
@@ -249,8 +258,9 @@ public class CustomerUI {
 				        for (Reservation reservation : reservations) {
 				           
 				            reservation.getTransactions().size();
-
-				         
+                         
+				             
+				            
 				            System.out.println("Reservation ID: " + reservation.getId());
 				            System.out.println("Rental Period Start: " + reservation.getRentalPeriodStart());
 				            System.out.println("Rental Period End: " + reservation.getRentalPeriodEnd());
@@ -273,6 +283,13 @@ public class CustomerUI {
 				            System.out.println("  Mileage: " + car.getMileage());
 				            System.out.println("  Rent per Hour: " + car.getRent());
 				            System.out.println("  City: " + car.getCity());
+				            
+				            CustomerDAO dao = new CustomerDAOImpl();
+				              
+				              Transaction t = dao.getTransactionByReservationId(reservation.getId());
+				              
+				              System.out.println("Total amount paid:-> Rs."+ t.getAmount());
+				            
 
 				            System.out.println("=============================================");
 				        }
